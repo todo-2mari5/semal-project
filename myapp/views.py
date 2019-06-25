@@ -3,6 +3,7 @@ from django.utils import timezone
 from .models import Post
 from .forms import PostForm
 
+
 # Create your views here.
 def post_list(req):
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
@@ -12,13 +13,13 @@ def post_detail(req, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(req, 'myapp/post_detail.html',{'post': post})
 
+
 def post_new(req):
     if req.method == "POST":
         form = PostForm(req.POST, req.FILES)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = req.user
-            post.published_date = timezone.now()
+            # post.author = req.user
             post.image = form.cleaned_data['image']
             post.save()
             return redirect('post_detail', pk=post.pk)
@@ -32,10 +33,23 @@ def post_edit(req, pk):
         form = PostForm(req.POST, instance=post)
         if form.is_valid():
             post = form.save(commit=False)
-            post.author = req.user
-            post.published_date = timezone.now()
+            # post.author = req.user
             post.save()
             return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm(instance=post)
     return render(req, 'myapp/post_edit.html', {'form': form})
+
+def post_draft_list(req):
+    posts = Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    return render(req, 'myapp/post_draft_list.html', {'posts':posts})
+
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish()
+    return redirect('post_detail', pk=pk)
+
+def post_remove(req, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.delete()
+    return redirect('post_list')
