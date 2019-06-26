@@ -1,4 +1,4 @@
-{% extends 'myapp/base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     {% for post in posts %}
@@ -6,7 +6,7 @@
             <div class="date">
                 {{ post.published_date }}
             </div>
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            <h1><a href="{% url 'myapp:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
             <img src="{{ post.image.url }}" class="photo-prv">
         </div>
     {% endfor %}
