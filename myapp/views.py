@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from .models import Post, User, EventInfo
-from .forms import PostForm
+from .forms import PostForm, EventForm
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -24,8 +24,9 @@ def post_new(req):
             post.save()
             return redirect('myapp:post_detail', pk=post.pk)
     else:
-        form = PostForm()
-    return render(req, 'myapp/post_edit.html', {'form': form})
+        post_form = PostForm()
+        event_form = EventForm()
+    return render(req, 'myapp/post_edit.html', {'post_form': post_form, 'event_form': event_form})
 
 def post_edit(req, pk):
     post = get_object_or_404(Post, pk=pk)
