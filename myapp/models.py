@@ -1,32 +1,40 @@
 from django.db import models
 from django.utils import timezone
-from djanog.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
+
+class EventInfo(models.Model):
+    host = models.TextField()
+    venue = models.CharField(max_length=200)
+    fee = models.CharField(max_length=200)
+    registration = models.CharField(max_length=200)
+    event_date = models.DateField()
+    start_time = models.TimeField()
+    end_time = models.TimeField()
+    flyer = models.ImageField(upload_to='myapp')
+
+
+    def __str__(self):
+        return self.host
+
+
 class Post(models.Model):
-    author = models.ForeignKey('auth.User',on_delete=models.SET_PROTECT,)
+    author = models.ForeignKey('myapp.User',on_delete=models.PROTECT)
     title = models.CharField(max_length=200)
     text = models.TextField()
-    venue = models.TextField()
-    fee = models.TextField()
-    registration = models.TextField()
-    language = models.TextField()
-    host = models.TextField()
-    contact = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
-    event_date = models.DateTimeField(default=timezone.now)
-    flyer = models.ImageField(upload_to='myapp')
     thumb = models.ImageField(upload_to='myapp')
-
+    event = models.OneToOneField(EventInfo, on_delete=models.CASCADE)
 
 
     def publish(self):
         self.published_date = timezone.now()
         self.save()
 
-    def __str__(self):
-        return self.title
+        def __str__(self):
+            return self.title
 
 
 class User(AbstractUser):
