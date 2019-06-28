@@ -1,18 +1,19 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import FileExtensionValidator
 
 # Create your models here.
 
 class EventInfo(models.Model):
     host = models.TextField()
-    venue = models.CharField(max_length=200)
-    fee = models.CharField(max_length=200)
-    registration = models.CharField(max_length=200)
+    venue = models.CharField(max_length=200, default='Place@url')
+    fee = models.CharField(max_length=50, default='Free')
+    registration = models.CharField(max_length=50, default='Not required')
+    lang = models.CharField(max_length=50, default='English')
     event_date = models.DateField()
-    start_time = models.TimeField()
-    end_time = models.TimeField()
-    flyer = models.ImageField(upload_to='myapp')
+    event_time = models.CharField(max_length=50, default='00:00-00:00')
+    flyer = models.FileField(upload_to='pdf', validators=[FileExtensionValidator(['pdf', ])],)
 
 
     def __str__(self):
@@ -25,7 +26,7 @@ class Post(models.Model):
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
-    thumb = models.ImageField(upload_to='myapp')
+    thumb = models.ImageField(upload_to='thumbnail', validators=[FileExtensionValidator(['jpg', 'png',])])
     event = models.OneToOneField(EventInfo, on_delete=models.CASCADE)
 
 

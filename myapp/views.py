@@ -16,13 +16,19 @@ def post_detail(req, pk):
 @login_required
 def post_new(req):
     if req.method == "POST":
-        form = PostForm(req.POST, req.FILES)
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.author = req.user
-            post.thumb = form.cleaned_data['thumb']
-            post.save()
-            return redirect('myapp:post_detail', pk=post.pk)
+        post_form = PostForm(req.POST, req.FILES)
+        event_form = EventForm(req.POST, req.FILES)
+        if event_form.is_valid():
+            event_info = event_form.save(commit=False)
+            event_info.flyer = event_form.cleaned_data['flyer']
+            event_info.save()
+            if post_form.is_valid():
+                post = post_form.save(commit=False)
+                post.author = req.user
+                post.thumb = post_form.cleaned_data['thumb']
+                post.event = event_info
+                post.save()
+                return redirect('myapp:post_detail', pk=post.pk)
     else:
         post_form = PostForm()
         event_form = EventForm()
