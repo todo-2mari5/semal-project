@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, EventInfo
+from .models import Post
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import get_user_model
 
@@ -7,17 +7,10 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 class PostForm(forms.ModelForm):
-
+    """イベント投稿フォーム"""
     class Meta:
         model = Post
-        fields = ('title', 'text', 'thumb')
-
-
-class EventForm(forms.ModelForm):
-
-    class Meta:
-        model = EventInfo
-        fields = ('event_date', 'event_time', 'venue', 'flyer', 'fee', 'registration', 'lang', 'host')
+        fields = ('title', 'text', 'thumb', 'event_date', 'event_time', 'venue', 'flyer', 'fee', 'registration', 'lang', 'host')
         widgets = {
             'event_date': forms.SelectDateWidget
         }

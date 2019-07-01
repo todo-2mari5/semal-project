@@ -10,7 +10,38 @@
     <h1>{{ post.title }}</h1>
     <p>{{ post.text|linebreaksbr }}</p>
     <img src="{{ post.thumb.url }}"  class="photo-prv">
-    <p>{{ post.image.url }}</p>
-    <a href="{{ post.event.flyer.url }}">flyer</a>
+    <p><a href="{{ post.flyer.url }}">flyer</a></p>
+    <table class="table table-borderd">
+      <tr>
+        <td>開催日</td>
+        <td>{{ post.event_date }}{{ post.event_time }}</td>
+      </tr>
+      <tr>
+        <td>開催場所</td>
+        <td>
+            {% if post.link_maker %}
+              <p>{{ post.link_maker.0 }}<a href="{{ post.link_maker.1 }}"><br><アクセス></a></p>
+            {% else %}
+              <p>{{ post.venue }}</p>
+            {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>参加費</td>
+        <td>{{ post.fee }}</td>
+      </tr>
+      <tr>
+        <td>予約</td>
+        <td>{{ post.registration }}</td>
+      </tr>
+      <tr>
+        <td>言語</td>
+        <td>{{ post.lang }}</td>
+      </tr>
+      <tr>
+        <td>主催</td>
+        <td>{{ post.host|linebreaksbr }}</td>
+      </tr>
+    </table>
   </div>
 {% endblock %}

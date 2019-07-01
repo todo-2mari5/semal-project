@@ -1,5 +1,5 @@
-from .models import Post, User, EventInfo
-from .forms import PostForm, EventForm, LoginForm, UserCreateForm
+from .models import Post, User
+from .forms import PostForm, LoginForm, UserCreateForm
 from django.utils import timezone
 from django.http import Http404, HttpResponseBadRequest
 from django.template.loader import render_to_string
@@ -31,23 +31,17 @@ def post_detail(req, pk):
 def post_new(req):
     """投稿画面"""
     if req.method == "POST":
-        post_form = PostForm(req.POST, req.FILES)
-        event_form = EventForm(req.POST, req.FILES)
-        if event_form.is_valid():
-            event_info = event_form.save(commit=False)
-            event_info.flyer = event_form.cleaned_data['flyer']
-            if post_form.is_valid():
-                post = post_form.save(commit=False)
-                post.author = req.user
-                post.thumb = post_form.cleaned_data['thumb']
-                post.event = event_info
-                event_info.save()
-                post.save()
-                return redirect('myapp:post_detail', pk=post.pk)
+        form = PostForm(req.POST, req.FILES)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = req.user
+            post.thumb = form.cleaned_data['thumb']
+            post.flyer = form.cleaned_data['flyer']
+            post.save()
+            return redirect('myapp:post_detail', pk=post.pk)
     else:
-        post_form = PostForm()
-        event_form = EventForm()
-    return render(req, 'myapp/post_edit.html', {'post_form': post_form, 'event_form': event_form})
+        form = PostForm()
+    return render(req, 'myapp/post_edit.html', {'form':form})
 
 def post_archive_list(req):
     """アーカイブのリスト"""
