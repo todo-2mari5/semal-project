@@ -16,10 +16,6 @@ class EventInfo(models.Model):
     flyer = models.FileField(upload_to='pdf', validators=[FileExtensionValidator(['pdf', ])],)
 
 
-    def __str__(self):
-        return self.host
-
-
 class Post(models.Model):
     author = models.ForeignKey('myapp.User',on_delete=models.PROTECT)
     title = models.CharField(max_length=200)

@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'myapp',
     'django_cleanup',
-    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
@@ -127,6 +126,9 @@ STATIC_ROOT = '/var/www/{}/static'.format(PROJECT_NAME)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+LOGIN_URL = 'myapp:login'
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'myapp.User'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
