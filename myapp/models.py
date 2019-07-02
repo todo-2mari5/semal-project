@@ -31,6 +31,13 @@ class Post(models.Model):
         else:
             return False
 
+    def at_remover(self):
+        if '@' in self.host:
+            host_contact = self.host.replace('@', '[at]')
+            return host_contact
+        else:
+            return False
+
     def __str__(self):
             return self.title
 

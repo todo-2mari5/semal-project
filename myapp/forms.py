@@ -8,12 +8,18 @@ User = get_user_model()
 
 class PostForm(forms.ModelForm):
     """イベント投稿フォーム"""
+
     class Meta:
         model = Post
         fields = ('title', 'text', 'thumb', 'event_date', 'event_time', 'venue', 'flyer', 'fee', 'registration', 'lang', 'host')
         widgets = {
-            'event_date': forms.SelectDateWidget
+            'event_date': forms.SelectDateWidget,
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
 
 
 class LoginForm(AuthenticationForm):

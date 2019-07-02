@@ -7,20 +7,30 @@
           {{ post.published_date }}
       </div>
     {% endif %}
+
     <h1>{{ post.title }}</h1>
-    <p>{{ post.text|linebreaksbr }}</p>
-    <img src="{{ post.thumb.url }}"  class="photo-prv">
-    <p><a href="{{ post.flyer.url }}">flyer</a></p>
+    <div class="container post-text">
+      <div class="row">
+        <div class="col-md-6 col-10">
+          <p>{{ post.text|linebreaksbr }}</p>
+        </div>
+        <div class="col-md-4 col-10">
+          <img src="{{ post.thumb.url }}"  class="photo-prv">
+          <p><a href="{{ post.flyer.url }}" target="_blank">Download</a></p>
+        </div>
+      </div>
+    </div>
+
     <table class="table table-borderd">
       <tr>
         <td>開催日</td>
-        <td>{{ post.event_date }}{{ post.event_time }}</td>
+        <td>{{ post.event_date }} {{ post.event_time }}</td>
       </tr>
       <tr>
         <td>開催場所</td>
         <td>
             {% if post.link_maker %}
-              <p>{{ post.link_maker.0 }}<a href="{{ post.link_maker.1 }}"><br><アクセス></a></p>
+              <p>{{ post.link_maker.0 }}<a href="{{ post.link_maker.1 }}" target="_blank"><br><アクセス></a></p>
             {% else %}
               <p>{{ post.venue }}</p>
             {% endif %}
@@ -40,7 +50,13 @@
       </tr>
       <tr>
         <td>主催</td>
-        <td>{{ post.host|linebreaksbr }}</td>
+        <td>
+          {% if post.at_remover %}
+            <p>{{ post.at_remover|linebreaksbr }}</p>
+          {% else %}
+            <p>{{ post.host|linebreaksbr }}</p>
+          {% endif %}
+        </td>
       </tr>
     </table>
   </div>

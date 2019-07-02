@@ -1,13 +1,21 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for post in posts %}
-        <div class="post">
-            <div class="date">
-                {{ post.published_date }}
+  <div class="container post-contents">
+    <div class="row">
+      {% for post in posts %}
+        <div class="col-10 col-md-6 col-lg-4">
+          <div class="post-col">
+            <div class="photo-wrapper">
+              <img src="{{ post.thumb.url }}" class="photo-prv">
             </div>
-            <h1><a href="{% url 'myapp:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
-            <img src="{{ post.thumb.url }}" class="photo-prv">
+            <div class="text-wrapper">
+              <h1><a href="{% url 'myapp:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+              {{ post.event_date }}
+            </div>
+          </div>
         </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
+  </div>
 {% endblock %}
