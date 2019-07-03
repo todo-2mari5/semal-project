@@ -38,10 +38,32 @@ def post_new(req):
             post.thumb = form.cleaned_data['thumb']
             post.flyer = form.cleaned_data['flyer']
             post.save()
-            return redirect('myapp:post_detail', pk=post.pk)
+            return redirect('myapp:post_draft', pk=post.pk)
     else:
         form = PostForm()
-    return render(req, 'myapp/post_edit.html', {'form':form})
+        return render(req, 'myapp/post_edit.html', {'form': form})
+
+def post_draft(req, pk):
+    """投稿確認画面"""
+    post = get_object_or_404(Post, pk=pk)
+    return render(req, 'myapp/post_draft.html', {'post': post})
+
+def post_edit(req, pk):
+    """投稿編集画面"""
+    post = get_object_or_404(Post, pk=pk)
+    if req.method == "POST":
+        form = PostForm(req.POST, instance=post)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.author = req.user
+            post.save()
+            return redirect('myapp:post_draft', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+    return render(req, 'myapp/post_edit.html', {'form': form})
+
+def post_complete(req):
+    return render(req, 'myapp/post_complete.html')
 
 def post_archive_list(req):
     """アーカイブのリスト"""

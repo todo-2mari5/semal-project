@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+  <p>以下の投稿でよろしいでしょうか</p>
+  <a href="{% url 'myapp:post_complete' %}">いい</a><a href="{% url 'myapp:post_edit' pk=post.pk %}">よくない</a>
+
+  <div class="post">
+    {% if post.published_date %}
+      <div class="date">
+          {{ post.published_date }}
+      </div>
+    {% endif %}
+
+    <h1>{{ post.title }}</h1>
+    <div class="container post-text">
+      <div class="row">
+        <div class="col-md-6 col-10">
+          <p>{{ post.text|linebreaksbr }}</p>
+        </div>
+        <div class="col-md-4 col-10">
+          <img src="{{ post.thumb.url }}"  class="photo-prv">
+          <p><a href="{{ post.flyer.url }}" target="_blank">Download</a></p>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-borderd">
+      <tr>
+        <td>開催日</td>
+        <td>{{ post.event_date }} {{ post.event_time }}</td>
+      </tr>
+      <tr>
+        <td>開催場所</td>
+        <td>
+            {% if post.link_maker %}
+              <p>{{ post.link_maker.0 }}<a href="{{ post.link_maker.1 }}" target="_blank"><br><アクセス></a></p>
+            {% else %}
+              <p>{{ post.venue }}</p>
+            {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td>参加費</td>
+        <td>{{ post.fee }}</td>
+      </tr>
+      <tr>
+        <td>予約</td>
+        <td>{{ post.registration }}</td>
+      </tr>
+      <tr>
+        <td>言語</td>
+        <td>{{ post.lang }}</td>
+      </tr>
+      <tr>
+        <td>主催</td>
+        <td>
+          {% if post.at_remover %}
+            <p>{{ post.at_remover|linebreaksbr }}</p>
+          {% else %}
+            <p>{{ post.host|linebreaksbr }}</p>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+  </div>
+{% endblock %}
