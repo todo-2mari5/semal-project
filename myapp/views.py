@@ -19,8 +19,9 @@ User = get_user_model()
 # -------------- アプリ関連 --------------
 def post_list(req):
     """投稿リスト"""
-    posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    return render(req, 'myapp/post_list.html', {"posts": posts})
+    posts = Post.objects.filter(event_date__gte=timezone.now()).order_by('-published_date')
+    sorted_posts = Post.objects.filter(event_date__gte=timezone.now()).order_by('event_date')
+    return render(req, 'myapp/post_list.html', {"posts": posts, "sorted_posts": sorted_posts})
 
 def post_detail(req, pk):
     """投稿の詳細"""
@@ -44,12 +45,12 @@ def post_new(req):
         return render(req, 'myapp/post_edit.html', {'form': form})
 
 def post_draft(req, pk):
-    """投稿確認画面"""
+    """投稿確認"""
     post = get_object_or_404(Post, pk=pk)
     return render(req, 'myapp/post_draft.html', {'post': post})
 
 def post_edit(req, pk):
-    """投稿編集画面"""
+    """投稿編集"""
     post = get_object_or_404(Post, pk=pk)
     if req.method == "POST":
         form = PostForm(req.POST, instance=post)
@@ -63,6 +64,7 @@ def post_edit(req, pk):
     return render(req, 'myapp/post_edit.html', {'form': form})
 
 def post_complete(req):
+    """投稿完了"""
     return render(req, 'myapp/post_complete.html')
 
 def post_archive_list(req):

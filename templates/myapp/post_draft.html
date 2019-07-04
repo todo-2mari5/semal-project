@@ -3,7 +3,7 @@
 {% block content %}
 
   <p>以下の投稿でよろしいでしょうか</p>
-  <a href="{% url 'myapp:post_complete' %}">いい</a><a href="{% url 'myapp:post_edit' pk=post.pk %}">よくない</a>
+  <a href="{% url 'myapp:post_complete' %}"　class="btn button-outline-primary">いい</a><a href="{% url 'myapp:post_edit' pk=post.pk %}" class="btn button-outline-primary">よくない</a>
 
   <div class="post">
     {% if post.published_date %}

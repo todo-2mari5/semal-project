@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
+  <h1 class="red-text">kokoyade</h1>
+
   <div class="container post-contents">
-    <div class="row">
+    <div class="row node_post">
       {% for post in posts %}
         <div class="col-10 col-md-6 col-lg-4">
           <div class="post-col">
@@ -17,5 +19,31 @@
         </div>
       {% endfor %}
     </div>
+    <div class="row sorted_post" style="display:none;">
+      {% for post in sorted_posts %}
+        <div class="col-10 col-md-6 col-lg-4">
+          <div class="post-col">
+            <div class="photo-wrapper">
+              <img src="{{ post.thumb.url }}" class="photo-prv">
+            </div>
+            <div class="text-wrapper">
+              <h1><a href="{% url 'myapp:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+              {{ post.event_date }}
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
   </div>
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+    $(function(){
+      $('.red-text').click(function(){
+        $('.sorted_post').show();
+        $('.node_post').css('display','none');
+      });
+    });
+  </script>
 {% endblock %}
