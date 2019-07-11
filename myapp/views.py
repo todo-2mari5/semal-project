@@ -67,10 +67,10 @@ def post_complete(req):
     """投稿完了"""
     return render(req, 'myapp/post_complete.html')
 
-def post_archive_list(req):
+def post_archive(req):
     """アーカイブのリスト"""
     posts = Post.objects.filter(event_date__lt=timezone.now()).order_by('event_date')
-    return render(req, 'myapp/post_draft_list.html', {'posts':posts})
+    return render(req, 'myapp/post_archive.html', {'posts':posts})
 
 
 # -------------- アカウント関連 --------------

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container post-contents">
+        <div class="row" id="post_list">
+            {% for post in posts %}
+                <div class="col-10 col-md-6 col-lg-4 post-card">
+                    <a href="{% url 'myapp:post_detail' pk=post.pk %}">
+                        <div class="post-col">
+                            <div class="photo-wrapper">
+                                <img src="{{ post.thumb.url }}" class="photo-prv">
+                            </div>
+                            <div class="text-wrapper">
+                                <h1>{{ post.title }}</h1>
+                                {{ post.event_date|date:"Y/m/d" }}
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
