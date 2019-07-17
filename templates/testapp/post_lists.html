@@ -93,12 +93,23 @@
         let sort_post = post_list.sort(compare('date'))
 
         $(function(){
-            $('#botan').click(function(){
-                $('#myposts').empty();
-                for (const post of sort_post) {
-                    $('#myposts').append('<div class="test"><p>' + post.title +'</p><p>' + post.date + '</p></div>');
-                };
-            });
+            $('#botan').toggle(
+            function(){
+                $.when($('#posts').fadeOut(200)
+                  ).done(function(){
+                      for (let i=0; i<boxies.length;i++){
+                          $('#posts').append(sorted_list[i]["parent"]).hide().fadeIn(200);
+                      };
+                  });
+            },function(){
+                $.when($('#posts').fadeOut(200)
+                  ).done(function(){
+                      for (let i=0; i<boxies.length;i++){
+                          $('#posts').append(post_list[i]["parent"]).hide().fadeIn(200);
+                      };
+                  });
+            }
+            );
         });
 
     </script>
