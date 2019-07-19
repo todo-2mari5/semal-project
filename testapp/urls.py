@@ -7,4 +7,5 @@ app_name = 'testapp'
 urlpatterns = [
     path('testapp/', views.post_lists, name='post_lists'),
     path('testapp/ajax_post_add/', views.ajax_post_add, name='ajax_post_add'),
+    path('testapp/ajax_post_detail/', views.ajax_post_detail, name='ajax_post_detail'),
 ]

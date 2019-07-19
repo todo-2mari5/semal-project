@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from .models import Post
 from django.http import JsonResponse
@@ -14,6 +14,15 @@ def ajax_post_add(request):
     post = Post.objects.create(title=title, date=date)
     d = {
         'title': 'hogehoge',
+        'date': post.date,
+    }
+    return JsonResponse(d)
+
+def ajax_post_detail(request):
+    pk = request.GET.get('pk')
+    post = get_object_or_404(Post, pk=pk)
+    d = {
+        'title': post.title,
         'date': post.date,
     }
     return JsonResponse(d)

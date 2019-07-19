@@ -1,11 +1,21 @@
 {% extends 'testapp/based.html' %}
 
 {% block content %}
+    <div class="popup-overlay">
+        <!--Creates the popup content-->
+        <div class="popup-content">
+            <h2 id="title"></h2>
+            <p id="date"></p>
+            <!--popup's close button-->
+            <button class="close">Close</button>
+        </div>
+    </div>
     <h2>記事一覧</h2>
     <p id="botan">botan</p>
-    <div id="myposts">
+    <div id="myposts" class="row">
         {% for post in posts %}
-            <div class="post-card">
+            <div class="box" id="ajax-detail-post">
+                <p class="pkey" style="display:none;">{{ post.pk }}</p>
                 <p>{{ post.title }}</p>
                 <p class="date">{{ post.date|date:"Y/m/d" }}</p>
             </div>
@@ -22,48 +32,14 @@
         {% csrf_token %}
     </form>
 
+
 {% endblock %}
 
 {% block extrajs %}
     <script>
-        function getCookie(name) {
-            var cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                var cookies = document.cookie.split(';');
-                for (var i = 0; i < cookies.length; i++) {
-                    var cookie = jQuery.trim(cookies[i]);
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
 
-        var csrftoken = getCookie('csrftoken');
-
-        function csrfSafeMethod(method) {
-            // these HTTP methods do not require CSRF protection
-            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-        }
-
-        $.ajaxSetup({
-            beforeSend: function (xhr, settings) {
-                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                    xhr.setRequestHeader("X-CSRFToken", csrftoken);
-                }
-            }
-        });
-
-
-
-        // 送信ボタンで呼ばれる
         $('#ajax-add-post').on('submit', e => {
-            // デフォルトのイベントをキャンセルし、ページ遷移しないように!
             e.preventDefault();
-
             $.ajax({
                 'url': '{% url "testapp:ajax_post_add" %}',
                 'type': 'POST',
@@ -73,45 +49,33 @@
                 },
                 'dataType': 'json'
             }).done( response => {
-                // <p>はろー</p>のような要素を作成し、それを記事一覧エリアに追加し、入力欄をクリアする。
                 const p = $('<p>', {text: response.title});
                 $('#posts').prepend(p);
                 $('#id_title').val('');
             });
-
         });
 
-        var post_list = [
-            {% for post in posts %}
-                {
-                    "title": "{{ post.title }}",
-                    "date": "{{ post.date|date:"Y/m/d" }}",
+        $('.box').on('click', function(e) {
+            e.preventDefault();
+            $(".popup-overlay, .popup-content").addClass("active");
+            $.ajax({
+                'url': '{% url "testapp:ajax_post_detail" %}',
+                'type': 'GET',
+                'data': {
+                    'pk': $(this).find('.pkey').text(),
                 },
-            {% endfor %}
-        ];
+                'dataType': 'json'
+            }).done( response => {
+                $('#title').text(response.title);
+                $('#date').text(response.date);
 
-        let sort_post = post_list.sort(compare('date'))
+            });
 
-        $(function(){
-            $('#botan').toggle(
-            function(){
-                $.when($('#posts').fadeOut(200)
-                  ).done(function(){
-                      for (let i=0; i<boxies.length;i++){
-                          $('#posts').append(sorted_list[i]["parent"]).hide().fadeIn(200);
-                      };
-                  });
-            },function(){
-                $.when($('#posts').fadeOut(200)
-                  ).done(function(){
-                      for (let i=0; i<boxies.length;i++){
-                          $('#posts').append(post_list[i]["parent"]).hide().fadeIn(200);
-                      };
-                  });
-            }
-            );
         });
 
+        $(".close, .popup-overlay").on("click", function(){
+            $(".popup-overlay, .popup-content").removeClass("active");
+        });
     </script>
 
 
