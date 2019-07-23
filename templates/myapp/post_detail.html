@@ -11,53 +11,36 @@
     <h1>{{ post.title }}</h1>
     <div class="container post-text">
       <div class="row">
-        <div class="col-md-6 col-10">
-          <p>{{ post.text|linebreaksbr }}</p>
-        </div>
         <div class="col-md-4 col-10">
-          <img src="{{ post.thumb.url }}"  class="photo-prv">
-          <p><a href="{{ post.flyer.url }}" target="_blank">Download</a></p>
+          <img id="img"  class="photo-prv">
+          <p>Flyer:<a id="pdf" target="_blank">Download</a></p>
+        </div>
+        <div class="col-md-6 col-12">
+            <table class="table table-borderd">
+              <tr>
+                <th>開催日</th><td id="date">{{ post.event_date }} {{ post.event_time }}</td>
+              </tr>
+              <tr>
+                <th>開催場所</th><td><p id="venue">{{ post.venue }}</p></td>
+              </tr>
+              <tr>
+                <th>参加費</th><td id="fee">{{ post.fee }}</td>
+              </tr>
+              <tr>
+                <th>予約</th><td id="registr">{{ post.registration }}</td>
+              </tr>
+              <tr>
+                <th>言語</th><td id="lang">{{ post.lang }}</td>
+              </tr>
+              <tr>
+                <th>主催</th><td><p id="host">{{ post.host|linebreaksbr }}</p></td>
+              </tr>
+            </table>
+            <p id="text">{{ post.text|linebreaksbr }}</p>
         </div>
       </div>
     </div>
 
-    <table class="table table-borderd">
-      <tr>
-        <td>開催日</td>
-        <td>{{ post.event_date }} {{ post.event_time }}</td>
-      </tr>
-      <tr>
-        <td>開催場所</td>
-        <td>
-            {% if post.link_maker %}
-              <p>{{ post.link_maker.0 }}<a href="{{ post.link_maker.1 }}" target="_blank"><br><アクセス></a></p>
-            {% else %}
-              <p>{{ post.venue }}</p>
-            {% endif %}
-        </td>
-      </tr>
-      <tr>
-        <td>参加費</td>
-        <td>{{ post.fee }}</td>
-      </tr>
-      <tr>
-        <td>予約</td>
-        <td>{{ post.registration }}</td>
-      </tr>
-      <tr>
-        <td>言語</td>
-        <td>{{ post.lang }}</td>
-      </tr>
-      <tr>
-        <td>主催</td>
-        <td>
-          {% if post.at_remover %}
-            <p>{{ post.at_remover|linebreaksbr }}</p>
-          {% else %}
-            <p>{{ post.host|linebreaksbr }}</p>
-          {% endif %}
-        </td>
-      </tr>
-    </table>
+
   </div>
 {% endblock %}

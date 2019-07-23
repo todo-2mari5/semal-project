@@ -17,5 +17,7 @@ urlpatterns = [
     path('user_create/', views.UserCreate.as_view(), name='user_create'),
     path('user_create/done', views.UserCreateDone.as_view(), name='user_create_done'),
     path('user_create/complete/<token>/', views.UserCreateComplete.as_view(), name='user_create_complete'),
+    path('post/ajax_post_detail/', views.ajax_post_detail, name='ajax_post_detail'),
 
 ]
+

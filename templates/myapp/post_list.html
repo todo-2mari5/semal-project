@@ -2,26 +2,62 @@
 
 {% block content %}
 
+    <div class="popup-bg">
+        <div class="popup-overlay">
+            <!--Creates the popup content-->
+            <div class="popup-header">
+                <button class="cls">Close</button>
+                <p id="title"></p>
+            </div>
+            <div class="popup-content row">
+                <div class="col-md-6">
+                    <div class="img-wrapper">
+                        <img id="img" class="photo-detail" src="">
+                    </div>
+                    <p>Flyer:<a id="pdf" target="_blank">Download</a></p>
+                </div>
+                <div class="col-md-6 col-12">
+                    <table class="table table-borderd">
+                      <tr>
+                        <th>開催日</th><td id="date"></td>
+                      </tr>
+                      <tr>
+                        <th>開催場所</th><td><p id="venue"></p></td>
+                      </tr>
+                      <tr>
+                        <th>参加費</th><td id="fee"></td>
+                      </tr>
+                      <tr>
+                        <th>予約</th><td id="regist"></td>
+                      </tr>
+                      <tr>
+                        <th>言語</th><td id="lang"></td>
+                      </tr>
+                      <tr>
+                        <th>主催</th><td><p id="host"></p></td>
+                      </tr>
+                    </table>
+                    <pre id="text" ></pre>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="post-wrapper">
         <div class="switch">
-            <label class="tgl-btn" for="toggle1">
-                <input type="checkbox" id="toggle1" class="tgl">
-                <span class="tgl-content"></span>
-                <span class="tgl-circle"></span>
-            </label>
-            <p class="archive"><a href="{% url 'myapp:post_archive' %}">→Archive</a></p>
-
+            <button type="button" name="button" id="tgl" class="btn">sort</button>
+            <a href="{% url 'myapp:post_archive' %}">→Archive</a>
         </div>
-        <div class="container post-contents">
+        <div class="post-contents">
             <div class="row" id="posts">
                 {% for post in posts %}
-                <div class="col-10 col-md-6 col-lg-4 post-card">
+                <div class="col-11 col-md-6 col-lg-4 post-card">
                     <a href="{% url 'myapp:post_detail' pk=post.pk %}">
                         <div class="post-col">
                             <div class="photo-wrapper">
                                 <img src="{{ post.thumb.url }}" class="photo-prv">
                             </div>
                             <div class="text-wrapper">
+                                <p class="pkey" style="display:none;">{{ post.pk }}</p>
                                 <h1>{{ post.title }}</h1>
                                 <p class="date">{{ post.event_date|date:"Y/m/d" }}</p>
                             </div>
@@ -33,39 +69,79 @@
         </div>
     </div>
 
+
+
 {% endblock %}
 
 {% block extrajs %}
-<script>
-    let posts = document.getElementById('posts');
-    let boxies = posts.getElementsByClassName('post-card');
-    let post_list = Array.prototype.slice.call(boxies);
+    <script>
+        let posts = document.getElementById('posts');
+        let boxies = posts.getElementsByClassName('post-card');
+        let post_list = Array.prototype.slice.call(boxies);
 
-    function compare(prop){
-      return function(a,b){
-        if( a.getElementsByClassName(prop)[0].textContent > b.getElementsByClassName(prop)[0].textContent){
-            return 1;
-        }else if( a.getElementsByClassName(prop)[0].textContent < b.getElementsByClassName(prop)[0].textContent ){
-            return -1;
+        function compare(prop){
+          return function(a,b){
+            if( a.getElementsByClassName(prop)[0].textContent > b.getElementsByClassName(prop)[0].textContent){
+                return 1;
+            }else if( a.getElementsByClassName(prop)[0].textContent < b.getElementsByClassName(prop)[0].textContent ){
+                return -1;
+            }
+            return 0;
+          }
         }
-        return 0;
-      }
-    }
 
-    let sorted_list = post_list.slice().sort(compare("date"));
-    let lists = [sorted_list, post_list];
+        let sorted_list = post_list.slice().sort(compare("date"));
+        let lists = [sorted_list, post_list];
 
-    $('#toggle1').click(function(){
-        let target_list = lists[0];
-        $.when(
-            $('#posts').fadeOut(150)
-        ).done(function(){
-            for (let i=0; i<target_list.length;i++){
-                $('#posts').append(target_list[i]).hide().fadeIn(150);
-            };
+        $('#tgl').click(function(){
+            let target_list = lists[0];
+            $.when(
+                $('#posts').fadeOut(150)
+            ).done(function(){
+                for (let i=0; i<target_list.length;i++){
+                    $('#posts').append(target_list[i]).hide().fadeIn(150);
+                };
+            });
+            lists = lists.reverse();
         });
-        lists = lists.reverse();
-    });
-</script>
+
+        $('.post-card').on('click', function(e) {
+            e.preventDefault();
+            $(".popup-bg, .popup-overlay, .popup-content").addClass("active");
+            $.ajax({
+                'url': '{% url "myapp:ajax_post_detail" %}',
+                'type': 'GET',
+                'data': {
+                    'pk': $(this).find('.pkey').text(),
+                },
+                'dataType': 'json'
+            }).done( response => {
+                $('#title').text(response.title).hide().fadeIn();
+                $('#date').text(response.date).hide().fadeIn();
+                document.getElementById('img').src = response.img;
+                document.getElementById('pdf').href = response.pdf;
+                $('#venue').text(response.venue).hide().fadeIn();
+                $('#fee').text(response.fee).hide().fadeIn();
+                $('#regist').text(response.regist).hide().fadeIn();
+                $('#lang').text(response.lang).hide().fadeIn();
+                $('#host').text(response.host).hide().fadeIn();
+                $('#text').text(response.text).hide().fadeIn();
+            });
+        });
+
+        $(".cls, .popup-overlay").on("click", function(){
+            $(".popup-bg, .popup-overlay, .popup-content").removeClass("active");
+            $('#title').text('');
+            $('#date').text('');
+            $('#img').src = '';
+            $('#pdf').href = '';
+            $('#venue').text('');
+            $('#fee').text('');
+            $('#regist').text('');
+            $('#lang').text('');
+            $('#host').text('');
+        });
+
+    </script>
 
 {% endblock %}

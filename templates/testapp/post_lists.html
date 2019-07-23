@@ -66,8 +66,8 @@
                 },
                 'dataType': 'json'
             }).done( response => {
-                $('#title').text(response.title);
-                $('#date').text(response.date);
+                $('#title').text(response.title).hide().fadeIn();
+                $('#date').text(response.date).hide().fadeIn();
 
             });
 
@@ -75,6 +75,8 @@
 
         $(".close, .popup-overlay").on("click", function(){
             $(".popup-overlay, .popup-content").removeClass("active");
+            $('#title').text('');
+            $('#date').text('');
         });
     </script>
 

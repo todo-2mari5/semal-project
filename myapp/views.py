@@ -1,7 +1,7 @@
 from .models import Post, User
 from .forms import PostForm, LoginForm, UserCreateForm
 from django.utils import timezone
-from django.http import Http404, HttpResponseBadRequest
+from django.http import Http404, HttpResponseBadRequest, JsonResponse
 from django.template.loader import render_to_string
 from django.views import generic
 from django.shortcuts import render, redirect, get_object_or_404
@@ -73,6 +73,22 @@ def post_archive(req):
     posts = Post.objects.filter(event_date__lt=timezone.now()).order_by('event_date')
     return render(req, 'myapp/post_archive.html', {'posts':posts})
 
+def ajax_post_detail(req):
+    pk = req.GET.get('pk')
+    post = get_object_or_404(Post, pk=pk)
+    d = {
+        'title': post.title,
+        'date': post.event_date,
+        'img': post.thumb.url,
+        'pdf': post.flyer.url,
+        'venue': post.venue,
+        'fee': post.fee,
+        'regist': post.registration,
+        'lang': post.lang,
+        'host': post.host,
+        'text': post.text,
+    }
+    return JsonResponse(d)
 
 # -------------- アカウント関連 --------------
 class Login(LoginView):
